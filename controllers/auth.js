@@ -66,5 +66,5 @@ export const logout = (req, res) => {
       sameSite: "none",
     })
     .status(200)
-    .json("User Logged Out");
+    .json("User Logged Out !");
 };
