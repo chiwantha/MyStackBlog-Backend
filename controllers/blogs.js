@@ -14,8 +14,10 @@ export const loadLatest = (req, res) => {
 };
 
 export const loadfeed = (req, res) => {
-  const q =
-    "SELECT * from Vw_Blogs WHERE blog_state = 1 ORDER BY createdAt DESC ";
+  const userId = req.query.userId;
+  const q = `SELECT * from Vw_Blogs WHERE blog_state = 1 ${
+    userId && `AND authorId = ${userId}`
+  } ORDER BY createdAt DESC`;
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length === 0) return res.status(404).json("No Any Blogs Found");
@@ -32,11 +34,12 @@ export const NewBlog = (req, res) => {
     if (err) return res.status(403).json("Token Is Not Valid");
 
     const q =
-      "INSERT INTO blog (title, category, intro, img, content, userId) VALUES (?)";
+      "INSERT INTO blog (slug, title, category, intro, img, content, userId) VALUES (?)";
 
     const { img, ...data } = req;
 
     const VALUES = [
+      req.body.slug,
       req.body.title,
       req.body.category,
       req.body.intro,
@@ -46,6 +49,9 @@ export const NewBlog = (req, res) => {
     ];
 
     // Error handling
+    if (!req.body.slug || req.body.slug.trim() === "") {
+      return res.status(400).json("Slug is Missing ( Backend Error !) !");
+    }
     if (!req.body.title || req.body.title.trim() === "") {
       return res.status(400).json("Title is Missing !");
     }
@@ -80,8 +86,8 @@ export const category = (req, res) => {
 };
 
 export const loadSnigle = (req, res) => {
-  const q = "SELECT * from Vw_Blogs WHERE blog_state = 1 AND id = ?";
-  db.query(q, [req.query.blogId], (err, data) => {
+  const q = "SELECT * from Vw_Blogs WHERE blog_state = 1 AND slug = ?";
+  db.query(q, [req.query.slug], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length === 0) return res.status(404).json("No Any Blogs Found");
 
