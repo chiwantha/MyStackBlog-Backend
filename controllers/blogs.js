@@ -3,11 +3,26 @@ import { db } from "../db.js";
 import jwt from "jsonwebtoken";
 
 export const loadLatest = (req, res) => {
-  const q =
-    "SELECT * from Vw_Blogs WHERE blog_state = 1 ORDER BY createdAt DESC LIMIT 6";
-  db.query(q, (err, data) => {
+  const cat = req.query.cat;
+  let catFIlter = "";
+  const limit = " ORDER BY createdAt DESC LIMIT 3";
+
+  if (cat && cat != "") {
+    catFIlter = " AND category = ?";
+  }
+
+  let q = "SELECT * FROM Vw_Blogs WHERE blog_state = 1";
+  q += catFIlter;
+  q += limit;
+
+  const queryParams = [];
+  if (cat && cat != "") {
+    queryParams.push(cat);
+  }
+
+  db.query(q, queryParams, (err, data) => {
     if (err) return res.status(500).json(err);
-    if (data.length === 0) return res.status(404).json("No Any Blogs Found");
+    if (data.length === 0) return res.status(404).json("No Blogs Found");
 
     return res.status(200).json(data);
   });
