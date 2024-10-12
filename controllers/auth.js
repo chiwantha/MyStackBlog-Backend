@@ -15,11 +15,11 @@ export const register = (req, res) => {
 
     // CREATE USER
     const q =
-      "INSERT INTO users (username, slug, email, password, name) VALUE (?)";
+      "INSERT INTO users (username, slug, number, password, name) VALUE (?)";
     const values = [
       req.body.username,
       req.body.slug,
-      req.body.email,
+      req.body.number,
       hashedPassword,
       req.body.name,
     ];

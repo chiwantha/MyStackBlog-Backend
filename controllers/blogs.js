@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export const loadLatest = (req, res) => {
   const cat = req.query.cat;
   let catFIlter = "";
-  const limit = " ORDER BY createdAt DESC LIMIT 3";
+  const limit = " ORDER BY createdAt DESC LIMIT 6";
 
   if (cat && cat != "") {
     catFIlter = " AND category = ?";
