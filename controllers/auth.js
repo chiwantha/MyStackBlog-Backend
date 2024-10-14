@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 export const register = (req, res) => {
   // CREATE USER
-  const q = "SELECT * FROM users WHERE username = ?";
+  const q = "SELECT username FROM users WHERE username = ?";
   db.query(q, [req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length) return res.status(400).json("User Already Exsists");
@@ -69,4 +69,25 @@ export const logout = (req, res) => {
     })
     .status(200)
     .json("User Logged Out !");
+};
+
+export const Usernamecheck = (req, res) => {
+  const q = "SELECT username, number FROM users WHERE username = ?";
+  db.query(q, [req.body.username], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length === 0) return res.status(404).json("User Not Found");
+    return res.status(200).json(data);
+  }); // <--- Added closing parenthesis here
+};
+
+export const RstPass = (req, res) => {
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+
+  const q = "UPDATE users SET password=? WHERE username = ?";
+  const val = [hashedPassword, req.body.username];
+  db.query(q, val, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Password Reset Successful !");
+  });
 };

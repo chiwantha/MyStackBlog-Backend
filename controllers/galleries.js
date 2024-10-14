@@ -5,7 +5,7 @@ export const load = (req, res) => {
     "SELECT id,title,category,intro,img,authorSlug,authorName FROM Vw_Blogs ORDER BY createdAt DESC";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
-    if (data.length === 0) return res.status(404).json("No Data Found !");
+    if (data.length === 0) return res.status(200).json([]);
 
     return res.status(200).json(data);
   });
