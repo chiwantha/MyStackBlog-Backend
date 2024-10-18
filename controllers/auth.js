@@ -91,3 +91,27 @@ export const RstPass = (req, res) => {
     return res.status(200).json("Password Reset Successful !");
   });
 };
+
+export const update = (req, res) => {
+  const q =
+    "UPDATE users SET name = ?, number = ?, email = ?, subtitle = ?, image = ? WHERE username = ?";
+  const values = [
+    req.body.name,
+    req.body.number,
+    req.body.email,
+    req.body.subtitle,
+    req.body.image,
+    req.body.username,
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) {
+      console.error("Error updating user:", err);
+      return res.status(500).json({ error: "Failed to update user." });
+    }
+    if (data.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    return res.status(200).json({ message: "User updated successfully!" });
+  });
+};

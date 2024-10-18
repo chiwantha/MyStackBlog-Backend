@@ -1,8 +1,8 @@
 import multer from "multer";
 
-const storage = multer.diskStorage({
+const storageBlog = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../Client/public/upload");
+    cb(null, "../Client/public/upload/blog");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -10,4 +10,16 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage: storage });
+export const uploadBlogImage = multer({ storage: storageBlog });
+
+const storageProfile = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../Client/public/upload/profile");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+export const uploadProfileImage = multer({ storage: storageProfile });
